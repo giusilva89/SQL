@@ -1,0 +1,21 @@
+-- GROUP BY COMMAND & HAVING CLAUSES
+
+SELECT first_name, 
+department, 
+SUM(salary) as total_salary
+FROM employees
+-- All Records will be returned
+WHERE region_id IN (4,5,6,7)
+GROUP BY first_name, department
+ORDER BY total_salary DESC;
+
+
+-- Total count of employees working for each department
+SELECT department, 
+COUNT(employee_id) as total_employees, 
+ROUND(AVG(salary) ,2)as avg_salary, 
+MIN(salary) as min_salary, 
+MAX(salary) as max_salary
+FROM employees
+GROUP BY department
+ORDER BY total_employees DESC;
