@@ -1,0 +1,22 @@
+
+-- Understanding Grouping
+CREATE TABLE cars(make varchar(10))
+
+INSERT INTO cars VALUES ('HONDA');
+INSERT INTO cars VALUES ('HONDA');
+INSERT INTO cars VALUES ('HONDA');
+INSERT INTO cars VALUES ('TOYOTA');
+INSERT INTO cars VALUES ('TOYOTA');
+INSERT INTO cars VALUES ('NISSAN');
+INSERT INTO cars VALUES (NULL);
+INSERT INTO cars VALUES (NULL);
+INSERT INTO cars VALUES (NULL);
+
+SELECT * FROM cars;
+
+
+-- Calculate the total number of records
+SELECT make as car_brand, COUNT(*) as total_count
+FROM cars
+GROUP BY make
+ORDER BY total_count DESC;
