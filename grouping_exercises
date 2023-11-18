@@ -1,0 +1,28 @@
+-- How many employees have the same name (provide the names and their count)
+SELECT first_name, COUNT(employee_id) as repeated_names
+FROM employees
+GROUP BY first_name
+HAVING COUNT(employee_id) >1
+ORDER BY repeated_names DESC;
+
+-- Unique departments in the employees table but do not use the DISTINTC keyword
+SELECT department
+FROM employees
+GROUP BY department;
+
+-- Give the different domains name and the total employees by domain name
+SELECT SUBSTRING(email, POSITION('@' IN email) + 1) as domain, -- extract the domain using two functions and +1 to extract text after '@'
+COUNT(employee_id) as same_domain_count
+FROM employees
+WHERE email IS NOT NULL -- exclude null values
+GROUP BY domain
+ORDER BY same_domain_count DESC;
+
+-- Create a summarised table that contains breakdown of gender, region_id by min salary, max salary and avg salary
+SELECT gender, region_id, 
+MIN(salary) as min_salary, 
+MAX(salary) as max_salary, 
+ROUND(AVG(salary),2) as avg_salary
+FROM employees
+GROUP BY gender, region_id
+ORDER BY gender, region_id; 
