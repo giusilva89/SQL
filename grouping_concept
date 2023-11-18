@@ -2,12 +2,15 @@
 -- Understanding Grouping
 CREATE TABLE cars(make varchar(10))
 
+-- Creating mock data
 INSERT INTO cars VALUES ('HONDA');
 INSERT INTO cars VALUES ('HONDA');
 INSERT INTO cars VALUES ('HONDA');
 INSERT INTO cars VALUES ('TOYOTA');
 INSERT INTO cars VALUES ('TOYOTA');
 INSERT INTO cars VALUES ('NISSAN');
+
+-- Adding null values
 INSERT INTO cars VALUES (NULL);
 INSERT INTO cars VALUES (NULL);
 INSERT INTO cars VALUES (NULL);
@@ -15,7 +18,7 @@ INSERT INTO cars VALUES (NULL);
 SELECT * FROM cars;
 
 
--- Calculate the total number of records
+-- Calculate the total number of records, add alias and order total occurences by descending
 SELECT make as car_brand, COUNT(*) as total_count
 FROM cars
 GROUP BY make
