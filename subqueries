@@ -1,0 +1,48 @@
+-- Simple example of a subquery in the FROM clause
+SELECT a.employee_name, a.yearly_salary, b.department
+FROM (SELECT first_name employee_name, salary yearly_salary
+	 FROM employees WHERE salary > 150000) a,  -- Source of data
+	 (SELECT department FROM departments) b  -- Source of data
+
+SELECT *
+FROM (SELECT department FROM departments) a; -- In the FROM clause source needs to be given alias     
+
+-- Simple example of a subquery in the WHERE clause
+SELECT *
+FROM employees
+WHERE department IN (SELECT department FROM departments);
+
+-- Simple example of a subquery in the SELECT clause
+SELECT first_name, last_name, salary, (SELECT first_name FROM employees)
+FROM employees;  -- This query is wrong as it will return all first names for each row! "ERROR:  more than one row returned by a subquery used as an expression "
+
+-- Write a SELECT statement that returns all employees that work in the electronic division
+SELECT first_name, last_name FROM employees;
+SELECT department FROM departments WHERE division = 'Electronics';
+
+SELECT first_name, last_name 
+FROM employees
+WHERE department IN (SELECT department FROM departments WHERE division = 'Electronics');
+
+-- Employees name who work in Asia or Canada and make over 130000
+
+-- 1st approach
+SELECT first_name, last_name, salary 
+FROM employees
+WHERE salary > 130000 AND region_id 
+	IN (SELECT region_id FROM regions WHERE country = 'Asia' OR country = 'Canada');
+
+-- 2nd approach
+SELECT first_name, last_name, salary 
+FROM employees
+WHERE salary > 130000 AND region_id 
+	IN (SELECT region_id FROM regions WHERE country IN ('Asia' OR country = 'Canada'));
+
+-- Fist name, department along how much less they make as compared to the highest payment in the company and these employees should be work in Asia and Canada
+SELECT first_name, last_name, 
+(SELECT MAX(salary) FROM employees) as max_salary, 
+((SELECT MAX(salary) FROM employees) - salary) salary_difference 
+FROM employees
+WHERE region_id 
+	IN (SELECT region_id FROM regions WHERE country = 'Asia' OR country = 'Canada')
+ORDER BY salary_difference DESC;
