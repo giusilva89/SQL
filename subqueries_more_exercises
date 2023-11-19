@@ -1,0 +1,40 @@
+CREATE table dupes (id integer, name varchar(10));
+
+INSERT INTO dupes VALUES (1, 'FRANK');
+INSERT INTO dupes VALUES (2, 'FRANK');
+INSERT INTO dupes VALUES (3, 'ROBERT');
+INSERT INTO dupes VALUES (4, 'ROBERT');
+INSERT INTO dupes VALUES (5, 'SAM');
+INSERT INTO dupes VALUES (6, 'FRANK');
+INSERT INTO dupes VALUES (7, 'PETER');
+
+
+SELECT * FROM dupes;
+
+-- Write a query that returns only unique data and also see their id
+
+-- 1st approach
+SELECT a.name, a.min_id
+FROM
+(SELECT name, MIN(id) as min_id
+FROM dupes
+GROUP BY name
+HAVING COUNT(name)=1 OR COUNT(name)>1) a
+ORDER BY a.min_id;
+
+-- 2nd approach
+DELETE FROM dupes
+WHERE id NOT IN (
+SELECT MIN(id)
+FROM dupes
+GROUP BY name)
+
+SELECT * FROM dupes;
+
+
+-- Compute the average of all employees and exclude the min and max salary
+SELECT ROUND(AVG(salary))
+FROM employees
+WHERE salary 
+NOT IN(SELECT MIN(salary) FROM employees) 
+AND salary NOT IN(SELECT MAX(salary) FROM employees);
