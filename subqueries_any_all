@@ -1,0 +1,47 @@
+-- ANY and ALL operator
+SELECT * FROM employees
+WHERE region_id > ANY (SELECT region_id FROM regions WHERE country = 'United States');
+
+SELECT * FROM employees
+WHERE region_id > ALL (SELECT region_id FROM regions WHERE country = 'United States');
+
+
+-- Write a queries that returns all of those employees that work in the kids division AND the dates at which those employees were hired is greater than all of the hire_dates of  employees who work in the maintenance department
+
+-- 1st approach
+SELECT first_name, last_name, department, hire_date
+FROM employees
+WHERE department IN (SELECT department FROM departments WHERE division = 'Kids') 
+	AND hire_date > ALL (SELECT hire_date FROM employees WHERE department = 'Maintenance');
+
+-- 2nd approach
+SELECT first_name, last_name, department, hire_date
+FROM employees
+WHERE department = ANY (SELECT department FROM departments WHERE division = 'Kids') 
+	AND hire_date > ALL (SELECT hire_date FROM employees WHERE department = 'Maintenance');
+
+
+-- Salaries that appear most frequently (MODE)
+
+-- 1st approach
+SELECT salary 
+FROM employees
+WHERE salary = 
+	ANY (SELECT salary
+	FROM employees
+	GROUP BY salary
+	HAVING COUNT(salary) > 1)
+ORDER BY salary DESC
+LIMIT 1;
+
+-- 2nd approach
+SELECT salary 
+FROM employees
+GROUP BY salary
+HAVING COUNT(*) >= ALL(SELECT COUNT(*) FROM employees 
+                        GROUP BY salary)
+ORDER BY salary DESC
+LIMIT 1;                        
+
+
+
