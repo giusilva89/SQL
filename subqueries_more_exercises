@@ -38,3 +38,5 @@ FROM employees
 WHERE salary 
 NOT IN(SELECT MIN(salary) FROM employees) 
 AND salary NOT IN(SELECT MAX(salary) FROM employees);
+
+
