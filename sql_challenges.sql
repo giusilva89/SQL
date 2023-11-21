@@ -107,10 +107,26 @@ LIMIT 3;
 
 -- Given the reviews table, write a query to retrieve the average star rating for each product, grouped by month. The output should display the month as a numerical value, product ID, and average star rating rounded to two decimal places. Sort the output first by month and then by product ID.
 SELECT 
-DATE_PART('month', submit_date::DATE) as mth,
+DATE_PART('month', submit_date::DATE) as month,
 product_id,
 ROUND(AVG(stars),2) avg_stars
 FROM reviews
-GROUP BY product_id, mth
-ORDER BY mth, product_id
+GROUP BY product_id, month
+ORDER BY month, product_id
 ;
+
+-- Assume you have an events table on Facebook app analytics. Write a query to calculate the click-through rate (CTR) for the app in 2022 and round the results to 2 decimal places.
+-- Definition and note:
+-- Percentage of click-through rate (CTR) = 100.0 * Number of clicks / Number of impressions
+-- To avoid integer division, multiply the CTR by 100.0, not 100.
+
+SELECT
+app_id,
+ROUND(100.0 *
+COUNT(CASE WHEN event_type = 'click' THEN 1 ELSE NULL END) /
+COUNT(CASE WHEN event_type = 'impression' THEN 1 ELSE NULL END), 2)  AS ctr_rate
+FROM events
+WHERE timestamp >= '2022-01-01' 
+AND timestamp < '2023-01-01'
+GROUP BY app_id;
+
