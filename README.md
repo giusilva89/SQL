@@ -1,1 +1,1 @@
-# master-sql
+# SQL Challenges
