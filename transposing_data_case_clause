@@ -1,0 +1,61 @@
+-- Tranposing rows into columns
+SELECT department, COUNT(*)
+FROM employees
+WHERE department IN ('Sports', 'Tools', 'Clothing', 'Computers')
+GROUP BY department;
+
+-- Pivot Sports, Tools, Clothing and Computer rows into columns
+SELECT
+SUM(CASE WHEN department = 'Sports' THEN 1 ELSE 0 END) as sports_employees,
+SUM(CASE WHEN department = 'Tools' THEN 1 ELSE 0 END) as sports_employees,
+SUM(CASE WHEN department = 'Clothing' THEN 1 ELSE 0 END) as sports_employees,
+SUM(CASE WHEN department = 'Computers' THEN 1 ELSE 0 END) as sports_employees
+FROM employees;
+
+-- Transposing w/ subqueries
+SELECT first_name,
+CASE WHEN region_id = 1 THEN (SELECT country FROM regions WHERE region_id = 1) END as region_1,
+CASE WHEN region_id = 2 THEN (SELECT country FROM regions WHERE region_id = 2) END as region_2,
+CASE WHEN region_id = 3 THEN (SELECT country FROM regions WHERE region_id = 3) END as region_3,
+CASE WHEN region_id = 4 THEN (SELECT country FROM regions WHERE region_id = 4)  END as region_4,
+CASE WHEN region_id = 5 THEN (SELECT country FROM regions WHERE region_id = 5)  END as region_5,
+CASE WHEN region_id = 6 THEN (SELECT country FROM regions WHERE region_id = 6)  END as region_6,
+CASE WHEN region_id = 7 THEN (SELECT country FROM regions WHERE region_id = 7)  END as region_7
+FROM employees;
+
+-- 
+
+SELECT 
+COUNT(a.region_1) + COUNT(a.region_2) + COUNT(a.region_3) as united_states,
+COUNT(a.region_4) + COUNT(a.region_5) + COUNT(a.region_6) as asia,
+COUNT(a.region_6) + COUNT(a.region_7) as canada
+
+FROM(
+SELECT first_name,
+CASE WHEN region_id = 1 THEN (SELECT country FROM regions WHERE region_id = 1) END as region_1,
+CASE WHEN region_id = 2 THEN (SELECT country FROM regions WHERE region_id = 2) END as region_2,
+CASE WHEN region_id = 3 THEN (SELECT country FROM regions WHERE region_id = 3) END as region_3,
+CASE WHEN region_id = 4 THEN (SELECT country FROM regions WHERE region_id = 4)  END as region_4,
+CASE WHEN region_id = 5 THEN (SELECT country FROM regions WHERE region_id = 5)  END as region_5,
+CASE WHEN region_id = 6 THEN (SELECT country FROM regions WHERE region_id = 6)  END as region_6,
+CASE WHEN region_id = 7 THEN (SELECT country FROM regions WHERE region_id = 7)  END as region_7
+FROM employees) a;
+
+
+SELECT 
+    SUM(CASE WHEN region LIKE '%United States%' THEN 1 ELSE 0 END) AS united_states,
+    SUM(CASE WHEN region LIKE '%Canada%' THEN 1 ELSE 0 END) AS canada,
+    SUM(CASE WHEN region LIKE '%Asia%' THEN 1 ELSE 0 END) AS asia
+FROM (
+    SELECT 
+        CONCAT_WS(',',
+            CASE WHEN region_id = 1 THEN (SELECT country FROM regions WHERE region_id = 1) END,
+            CASE WHEN region_id = 2 THEN (SELECT country FROM regions WHERE region_id = 2) END,
+            CASE WHEN region_id = 3 THEN (SELECT country FROM regions WHERE region_id = 3) END,
+            CASE WHEN region_id = 4 THEN (SELECT country FROM regions WHERE region_id = 4) END,
+            CASE WHEN region_id = 5 THEN (SELECT country FROM regions WHERE region_id = 5) END,
+            CASE WHEN region_id = 6 THEN (SELECT country FROM regions WHERE region_id = 6) END,
+            CASE WHEN region_id = 7 THEN (SELECT country FROM regions WHERE region_id = 7) END
+        ) AS region
+    FROM employees
+) as a
