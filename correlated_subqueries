@@ -1,0 +1,19 @@
+-- The inner query uses information obtained from the outer query
+
+-- Earning above the department average salary
+SELECT first_name,salary
+FROM employees e1
+WHERE salary (SELECT ROUND(AVG(salary)) 
+			  FROM employees e2 WHERE e1.department = e2.department)
+
+-- Same but by region
+SELECT first_name,salary
+FROM employees e1
+WHERE salary (SELECT ROUND(AVG(salary))
+			  FROM employees e2 WHERE e1.region_id = e2.region_id)
+
+-- Output: Employee's salary vs Department Avg. Salary
+SELECT first_name, department, salary,
+(SELECT ROUND(AVG(salary))
+			  FROM employees e2 WHERE e1.department = e2.department) as avg_department_salary
+FROM employees e1
