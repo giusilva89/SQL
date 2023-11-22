@@ -1,4 +1,5 @@
 -- The inner query uses information obtained from the outer query
+-- Correlated subquery runs for every record and uses values from the outer query
 
 -- Earning above the department average salary
 SELECT first_name,salary
@@ -17,3 +18,54 @@ SELECT first_name, department, salary,
 (SELECT ROUND(AVG(salary))
 			  FROM employees e2 WHERE e1.department = e2.department) as avg_department_salary
 FROM employees e1
+
+
+-- Obtain the name of departments that have more than 38 employees
+
+-- Approach 1
+SELECT department
+FROM departments
+WHERE 38 < (SELECT COUNT(*)
+		   FROM employees e
+		   WHERE e.department = departments.department);
+
+-- Approach 2
+SELECT DISTINCT department
+FROM employees e1
+WHERE 38 < (SELECT COUNT(*)
+			FROM employees e2
+			WHERE e1.department = e2.department);
+
+-- Approach 3
+SELECT department
+FROM employees e1
+WHERE 38 < (SELECT COUNT(*)
+			FROM employees e2
+			WHERE e1.department = e2.department)
+GROUP BY department;			
+
+-- Approach 4
+
+SELECT DISTINCT department, 
+(SELECT COUNT(e2.employee_id) as employees_count
+ FROM employees e2 
+ WHERE e2.department = e1.department
+ HAVING COUNT(e2.employee_id) > 38)
+FROM employees e1
+;
+
+-- Highest paid employees salary for each of these departments
+
+-- Using correlated subquery
+SELECT department, 
+(SELECT ROUND(MAX(salary)) 
+ FROM employees e1 WHERE e1.department = departments.department) as max_salary
+FROM departments
+WHERE 38 < (SELECT COUNT(*)
+		   FROM employees e
+		   WHERE e.department = departments.department);
+
+-- Simpler approach
+SELECT deparment, MAX(salary)
+FROM employees
+GROUP BY department;
