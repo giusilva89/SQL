@@ -1,0 +1,13 @@
+-- Cartesian Product with the CROSS JOIN: If there's no JOIN specified or conditions in the WHERE clause then, every single combination of rows between the two table will be returned.
+-- It means that every row in the table a is matched with every row of the table b.
+
+SELECT * FROM employees, deparments  -- (1000 * 24) 24,000 records
+
+SELECT * FROM employees a, employees b -- (1000 * 1000) 1,000,000 records
+
+-- It gives all the combination of the records for each employee. For instance, there are 24 departments and, therefore, there will be 24 possible combinations for each employee when CROSS JOIN / Cartesion Product is applied.
+SELECT *
+FROM employees a CROSS JOIN departments b
+
+
+

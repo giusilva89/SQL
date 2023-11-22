@@ -1,0 +1,40 @@
+-- Join on two columns using two data sources
+SELECT first_name, country
+FROM employees, regions
+WHERE employees.region_id = regions.region_id
+
+-- Provide a table that contains first_name, email address (filter missing data), division 
+
+-- Without using JOIN
+
+SELECT employees.first_name, employees.email, departments.division 
+FROM employees, departments
+WHERE departments.department = employees.department 
+AND employees.email IS NOT NULL;
+
+-- Using JOIN
+SELECT employees.first_name, employees.email, departments.division 
+FROM employees
+JOIN departments 
+ON departments.department = employees.department
+WHERE employees.email <> '';
+
+
+-- Adding more tables
+SELECT employees.first_name, employees.email, departments.division, regions.country
+FROM employees, departments, regions
+WHERE departments.department = employees.department 
+AND employees.region_id = regions.region_id
+AND employees.email IS NOT NULL;
+
+-- Country + Total count of employees
+SELECT regions.country, COUNT(employees.employee_id) as total_employees
+FROM employees, regions
+WHERE regions.region_id = employees.region_id
+GROUP BY regions.country;
+
+-- Subquery as Source of data
+SELECT regions.country, COUNT(employees.employee_id) as total_employees
+FROM employees, (SELECT * FROM regions) r -- Subquery as source of data
+WHERE regions.region_id = employees.region_id
+GROUP BY regions.country;

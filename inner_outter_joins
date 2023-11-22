@@ -1,0 +1,64 @@
+-- INNER JOIN: matches common values between tables
+
+-- OUTER JOINS: keeps values from chosen table (LEFT or RIGHT) and matches values from the other i.e. LEFT, RIGTH or FULL OUTER JOIN. As a result, it may produce null values.
+
+-- Only those department that exist in employees table that do not exist in departments table
+SELECT DISTINCT e.department as missing_departments
+FROM employees e
+LEFT JOIN departments d
+ON d.department = e.department
+WHERE d.department IS NULL;
+
+-- UNION and UNION ALL: stack data on top of each other. Each union must have the same number of columns and the data types must also match.
+
+SELECT department
+FROM employees
+UNION  -- unique matches
+SELECT department
+FROM departments;
+
+SELECT department
+FROM employees
+UNION ALL -- includes duplicates
+SELECT department
+FROM departments;
+
+-- EXECPT: Removes all matches and keep only non-duplicates records. It's an optimised approach to find missing departments that are not present in the employees table.
+-- It's like a subtraction which removes duplicate data between tables.
+
+SELECT department
+FROM employees
+EXCEPT
+SELECT DISTINCT department
+FROM departments;
+
+-- The above query give the same output as this one
+SELECT DISTINCT e.department as missing_departments
+FROM employees e
+LEFT JOIN departments d
+ON d.department = e.department
+WHERE d.department IS NULL;
+
+-- Generate a report the breakdown by department and total number of employees and the total employees at the botton of the report.
+
+-- 1st approach
+SELECT DISTINCT department, COUNT(employee_id)
+FROM employees
+GROUP BY department
+
+UNION ALL
+
+SELECT 
+	CASE WHEN COUNT(employee_id) IS NOT NULL THEN 'TOTAL' END as department,
+COUNT(employee_id) as count
+FROM employees;
+
+-- 2nd approach
+SELECT DISTINCT department, COUNT(employee_id)
+FROM employees
+GROUP BY department
+
+UNION ALL
+
+SELECT 'TOTAL', COUNT(*)
+FROM employees;
