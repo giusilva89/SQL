@@ -1,0 +1,48 @@
+-- Department, First name, their salary and highest and lowest salary (as label). 
+
+-- Sort by department ascending and by salary descending.
+
+-- First solution
+SELECT department, first_name, salary,
+CASE 
+	WHEN salary = 
+	(SELECT MAX(salary)
+	 FROM employees e2
+	 WHERE e1.department = e2.department)  THEN 'HIGHEST SALARY'
+	WHEN salary = 
+	(SELECT MIN(salary)
+	 FROM employees e2
+	 WHERE e1.department = e2.department)  THEN 'LOWEST SALARY'
+END as category
+FROM employees e1
+WHERE salary = (SELECT MAX(salary)
+			FROM employees e2
+			WHERE e1.department = e2.department) 
+			OR
+	 salary = (SELECT MIN(salary)
+			FROM employees e2
+			WHERE e1.department = e2.department)
+ORDER BY department ASC, salary DESC;			
+
+
+-- Optimised approach
+SELECT department, first_name, salary,
+
+CASE 
+	WHEN salary = max_department_salary THEN 'HIGHEST SALARY'
+	WHEN salary = min_department_salary THEN 'LOWEST SALARY'
+END
+FROM(
+
+SELECT department, first_name, salary,
+(SELECT ROUND(MAX(salary))
+			  FROM employees e2 WHERE e1.department = e2.department) as max_department_salary,
+	
+(SELECT ROUND(MIN(salary))
+			  FROM employees e2 WHERE e1.department = e2.department) as min_department_salary
+	
+FROM employees e1
+) a
+
+WHERE salary = max_department_salary OR salary = min_department_salary
+ORDER BY department;
