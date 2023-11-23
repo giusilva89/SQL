@@ -1,0 +1,36 @@
+-- Provide the first name, department, hire date and country of the first and last employee hired
+
+-- 1st approach 
+SELECT first_name, hire_date, department, country 
+
+FROM (
+SELECT first_name, hire_date, department, region_id,
+(SELECT MIN(hire_date) FROM employees) first_hire,
+(SELECT MAX(hire_date) FROM employees) last_hire
+
+FROM employees 	
+) emp
+INNER JOIN regions
+ON emp.region_id = regions.region_id
+WHERE hire_date = first_hire OR hire_date = last_hire
+ORDER BY emp.hire_date DESC		
+LIMIT 2;
+
+
+-- 2nd approach with UNION
+(SELECT first_name, department, hire_date, country
+FROM employees e INNER JOIN regions r
+ON e.region_id = r.region_id
+WHERE hire_date = (SELECT MIN(hire_date) FROM employees e2)
+LIMIT 1)
+
+UNION 
+
+SELECT first_name, department, hire_date, country
+FROM employees e INNER JOIN regions r
+ON e.region_id = r.region_id
+WHERE hire_date = (SELECT MAX(hire_date) FROM employees e2)
+ORDER BY hire_date DESC
+;
+
+-- Reports that shows the spending on salaries every 90 days
