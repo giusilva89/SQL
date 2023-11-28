@@ -1,0 +1,29 @@
+-- In short, window functions are alternatives for correlated subqueries which are expensive to run
+-- The reason why is that they use values of the outer query and it needs to run for each record of the database.
+
+-- OVER clause is used to create windows and it runs towards the end. It means that if a WHERE clause is added,
+-- the output will be automatically adjusted.
+
+-- ORDER OF EXECUTION: FROM, WHERE, SELECT including WINDOW FUNCTIONS. 
+
+-- Returns the total count of all employees 
+SELECT first_name, department, 
+COUNT(*) OVER ()  -- Detach the results from the return of the other columns
+FROM employees e2;
+
+SELECT first_name, department,
+COUNT(*) OVER(PARTITION BY department) -- Count by department similar result expected when using correlated subquery
+FROM employees;
+
+
+SELECT first_name, department,
+COUNT(*) OVER(PARTITION BY department) dept_count, -- Count by department
+region_id, -- display region_id
+COUNT(*) OVER(PARTITION BY region_id) region_count -- County by region
+FROM employees;
+
+
+-- Example filtering with WHERE clause
+SELECT first_name, department, COUNT(*) OVER() -- OVER clause to create windows
+FROM employees
+WHERE region_id =3; -- This condition will adjust the output based on the specified region_id

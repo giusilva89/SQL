@@ -1,0 +1,22 @@
+-- LEAD and LAG: These functions are helpful because they allow us to work with other records relative to the current record.
+-- Use case: get the values from a row that is directly above or directly below the currently processing row.
+-- Obviously, the last row will be blank when using LEAD.
+SELECT first_name, last_name, salary,
+LEAD(salary) OVER() next_salary
+FROM employees;
+
+-- Same goes for LAG, the first row will be blank
+SELECT first_name, last_name, salary,
+LAG(salary) OVER() previous_salary
+FROM employees;
+
+-- USE CASES:
+-- Closest Lower Salary by Department (resets for each department)
+SELECT department, last_name, salary,
+LEAD(salary) OVER(PARTITION BY department ORDER BY salary DESC) closest_lower_salary
+FROM employees;
+
+-- Closest Higher Salary by Department (resets for each department)
+SELECT department, last_name, salary,
+LAG(salary) OVER(PARTITION BY department ORDER BY salary DESC) closest_higher_salary
+FROM employees;

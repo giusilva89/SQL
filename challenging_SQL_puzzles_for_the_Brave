@@ -1,0 +1,10 @@
+-- Write a query that finds students who do not take CS180.
+
+SELECT DISTINCT(s.student_name)
+FROM students s
+JOIN student_enrollment se
+ON s.student_no = se.student_no
+WHERE se.student_no NOT IN (SELECT se2.student_no FROM student_enrollment se2 WHERE course_no = 'CS180');
+
+
+-- Write a query to find students who take CS110 or CS107 but not both.

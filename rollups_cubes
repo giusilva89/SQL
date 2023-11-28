@@ -1,0 +1,28 @@
+-- OPERATORS: GROUPING SETS, ROLLUP AND CUBE
+
+-- GROUPING SETS allows to provide a breakdown of units sold by continent, country and city in one query.
+
+SELECT continent, country, city, SUM(units_sold)
+FROM sales
+GROUP BY GROUPING SETS(continent, country, city); -- provides a breakdown individually / separedately
+
+
+-- To provide the Grand Total
+
+SELECT continent, country, city, SUM(units_sold)
+FROM sales
+GROUP BY GROUPING SETS(continent, country, city, ()); -- Empty brackets will provide the total sum and it won't group by anything
+
+-- ROLLUP: It provides the Grand Total as well as the result if we were to group by any of the categories
+-- Example: Continent, Country and City, Continent and Country and Country
+
+SELECT continent, country, city, SUM(units_sold)
+FROM sales
+GROUP BY ROLLUP(continent, country, city); 
+
+
+-- CUBE: It's provides more combination then the ROLLUP. It explores all possible combinations used in the GROUP BY clause.
+
+SELECT continent, country, city, SUM(units_sold)
+FROM sales
+GROUP BY CUBE(continent, country, city); 

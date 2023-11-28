@@ -34,3 +34,7 @@ ORDER BY hire_date DESC
 ;
 
 -- Reports that shows the spending on salaries every 90 days
+SELECT hire_date, salary,
+(SELECT SUM(salary) FROM employees e2 WHERE e2.hire_date BETWEEN e1.hire_date - 90 AND e1.hire_date) as spending_pattern
+FROM employees e1
+ORDER BY hire_date

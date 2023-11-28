@@ -1,0 +1,51 @@
+-- RANK function
+
+SELECT first_name, email, department, salary,
+RANK() OVER(PARTITION BY department ORDER BY salary DESC)
+FROM employees;
+
+-- Employees who are in 8th position
+SELECT * 
+FROM
+(SELECT first_name, email, department, salary,
+RANK() OVER(PARTITION BY department ORDER BY salary DESC)
+FROM employees) a
+WHERE rank = 8;
+
+-- However it won't work if filtering in the WHERE clause
+SELECT first_name, email, department, salary,
+RANK() OVER(PARTITION BY department ORDER BY salary DESC)
+FROM employees 
+WHERE rank = 8;  -- the rank column does not exist! Because the where clause is used to filter records from the employees table.
+
+
+-- NTILE functions: Groups buckets of rows in a partition
+-- First five highest employees as rank one and then the next five highest employees as rank two...
+SELECT first_name, email, department, salary,
+NTILE(5) OVER(PARTITION BY department ORDER BY salary DESC) as salary_bracket -- Split into 5 buckets
+FROM employees; 
+
+-- FIRST_VALUE: It takes a column as an argument
+-- FIRST_VALUE and MAX function play the same role. However, the advantage of the FIRST_VALUE function gives us is that we can order by any other column. 
+SELECT first_name, email, department, salary,
+FIRST_VALUE(salary) OVER(PARTITION BY department ORDER BY salary DESC) as first_value -- Outputs the first salary of each department
+FROM employees;
+
+SELECT first_name, email, department, salary,
+MAX(salary) OVER(PARTITION BY department ORDER BY salary DESC) as first_value -- Outputs the first salary of each department
+FROM employees;
+
+
+-- The output of this substraction will be blank
+SELECT first_name, email, department, salary,
+FIRST_VALUE(salary) OVER(PARTITION BY department ORDER BY salary DESC) as first_value -- Outputs the first salary of each department
+FROM employees
+EXCEPT
+SELECT first_name, email, department, salary,
+MAX(salary) OVER(PARTITION BY department ORDER BY salary DESC) as first_value -- Outputs the first salary of each department
+FROM employees;
+
+-- NTH_VALUE: the nth_value of a given columns
+SELECT first_name, email, department, salary,
+NTH_VALUE(salary, 5) OVER(PARTITION BY department ORDER BY salary DESC) as nth_value -- Outputs the 5th salary of each department
+FROM employees;

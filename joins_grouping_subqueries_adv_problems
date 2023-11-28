@@ -1,0 +1,41 @@
+-- Write a query that shows the student's name, the courses the student is taking and the professors that teach that course.
+SELECT s.student_name, c.course_title, t.last_name
+FROM students s
+JOIN student_enrollment se ON s.student_no = se.student_no
+JOIN courses c ON se.course_no = c.course_no
+JOIN teach t ON c.course_no = t.course_no;
+
+-- In question 3 you discovered why there is repeating data. How can we eliminate this redundancy? Let's say we only care to see a single professor teaching a course and we don't care for all the other professors that teach the particular course. Write a query that will accomplish this so that every record is distinct.
+SELECT student_name, course_no, min(last_name)
+FROM (
+SELECT student_name, se.course_no, p.last_name
+FROM students s
+INNER JOIN student_enrollment se
+    ON s.student_no = se.student_no
+INNER JOIN teach t
+    ON se.course_no = t.course_no
+INNER JOIN professors p
+    ON t.last_name = p.last_name
+
+    ) a
+    GROUP BY student_name, course_no
+    ORDER BY student_name, course_no;
+
+-- In the video lectures, we've been discussing the employees table and the departments table. Considering those tables, write a query that returns employees whose salary is above average for their given department.
+SELECT 
+e1.first_name, 
+d.department, 
+e1.salary,
+(SELECT ROUND(AVG(salary)) FROM employees e2 WHERE e1.department = e2.department) as avg_salary_department,
+salary - (SELECT ROUND(AVG(salary)) FROM employees e2 WHERE e1.department = e2.department) as avg_salary_diff
+FROM employees e1
+LEFT JOIN departments d ON e1.department = d.department
+WHERE e1.salary > (SELECT ROUND(AVG(salary)) FROM employees e2 WHERE e1.department = e2.department)
+ORDER BY e1.first_name, d.department;
+
+-- Write a query that returns ALL of the students as well as any courses they may or may not be taking.
+SELECT s.student_no, 
+student_name, 
+course_no
+FROM students s LEFT JOIN student_enrollment se
+    ON s.student_no = se.student_no;

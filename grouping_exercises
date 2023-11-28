@@ -5,7 +5,7 @@ GROUP BY first_name
 HAVING COUNT(employee_id) >1
 ORDER BY repeated_names DESC;
 
--- Unique departments in the employees table but do not use the DISTINTC keyword
+-- Unique departments in the employees table but do not use the DISTINCT keyword
 SELECT department
 FROM employees
 GROUP BY department;
